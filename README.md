@@ -10,7 +10,14 @@ $Inst = new EventEmitter();
 $Inst->on('Init', function(string $Info){
   echo "OnInit: $Info\n";
 });
+$Inst->once('OnlyOnce', function(string $Info){
+  echo "OnlyOnce: $Info\n";
+});
 $Inst->emit('Init', 'Test');
+$Inst->emit('OnlyOnce', 'Test'); // Not matter how hard you try
+$Inst->emit('OnlyOnce', 'Test'); // It will only be emitted once
+$Inst->emit('OnlyOnce', 'Test');
+$Inst->emit('OnlyOnce', 'Test');
 ```
 ```hack
 // By extending it
