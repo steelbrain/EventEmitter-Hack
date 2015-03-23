@@ -1,9 +1,6 @@
 <?hh //strict
 class EventEmitter{
   public Map<string, Vector<(function(string):void)>> $Callbacks = Map{};
-  public function __construct(){
-
-  }
   public function on(string $Event, (function(string):void) $Callback):this{
     if(!$this->Callbacks->contains($Event)){
       $this->Callbacks->set($Event, Vector{});
