@@ -1,26 +1,26 @@
 <?hh
 class EventEmitter{
-  public Map<string, Vector<(function(string):void)>> $Callbacks = Map{};
-  public function on(string $Event, (function(string):void) $Callback):this{
+  public Map<string, Vector> $Callbacks = Map{};
+  public function on(string $Event, $Callback):this{
     if(!$this->Callbacks->contains($Event)){
       $this->Callbacks->set($Event, Vector{});
     }
     $this->Callbacks->get($Event)?->add($Callback);
     return $this;
   }
-  public function once(string $Event, (function(string):void) $Callback):this{
+  public function once(string $Event, $Callback):this{
     if(!$this->Callbacks->contains($Event)){
       $this->Callbacks->set($Event, Vector{});
     }
     $WrapperCB = null;
-    $WrapperCB = function(string $Info) use($Callback, $Event, &$WrapperCB) {
+    $WrapperCB = function($Info) use($Callback, $Event, &$WrapperCB) {
       $Callback($Info);
       $this->off($Event, $WrapperCB);
     };
     $this->Callbacks->get($Event)?->add($WrapperCB);
     return $this;
   }
-  public function off(string $Event, ?(function(string):void) $Callback):this{
+  public function off(string $Event, $Callback):this{
     if($this->Callbacks->contains($Event)){
       if($Callback === null){
         $this->Callbacks->remove($Event);
@@ -33,11 +33,11 @@ class EventEmitter{
     }
     return $this;
   }
-  public function emit(string $Event, string $Args):this{
+  public function emit(string $Event, $Info = null):this{
     $Vector = $this->Callbacks->contains($Event) ? $this->Callbacks->get($Event) : null;
     if($Vector !== null){
       foreach($Vector as $Callback){
-        $Callback($Args);
+        $Callback($Info);
       }
     }
     return $this;
